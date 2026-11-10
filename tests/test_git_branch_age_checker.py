@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src" / "git_branch_age_checker.py"
-DAY54 = Path.home() / "workspace" / "goals" / "github-automation-business" / "builds" / "day54-ini-validator-cli"
+KNOWN_GOOD_CI = 'name: CI\non: [push, pull_request]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-python@v5\n        with:\n          python-version: "3.12"\n      - run: python3 tests/test_ini_validator.py\n'
 
 
 def run_cli(args, cwd=None, env=None):
@@ -494,7 +494,7 @@ class HygieneTests(unittest.TestCase):
                 )
 
     def test_ci_matches_known_good_ci_except_test_name(self):
-        known_good = (DAY54 / ".github" / "workflows" / "ci.yml").read_text()
+        known_good = KNOWN_GOOD_CI
         ours = (ROOT / ".github" / "workflows" / "ci.yml").read_text()
         self.assertEqual(
             ours.replace("test_git_branch_age_checker.py", "test_ini_validator.py"),
